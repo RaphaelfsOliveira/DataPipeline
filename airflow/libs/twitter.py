@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 
 def auth():
-    return os.environ.get("BEARER_TOKEN")
+    return os.environ.get('BEARER_TOKEN')
 
 
 def date_filter():
@@ -16,7 +16,7 @@ def date_filter():
     start_time = (datetime.now() - timedelta(days=5)).strftime(date_format)
     end_time = (datetime.now()).strftime(date_format)
     
-    return f"start_time={start_time}&end_time={end_time}"
+    return f'start_time={start_time}&end_time={end_time}'
 
 
 def tweet_fields():
@@ -30,7 +30,7 @@ def tweet_fields():
         'text',
     ])
     
-    return f"tweet.fields={tweet}"
+    return f'tweet.fields={tweet}'
 
 
 def user_fields():
@@ -41,11 +41,11 @@ def user_fields():
         'created_at',
     ])
     
-    return f"expansions=author_id&user.fields={user}"
+    return f'expansions=author_id&user.fields={user}'
 
 
 def create_url():
-    query = "AluraOnline"
+    query = 'AluraOnline'
 
     tweets = tweet_fields()
     users = user_fields()
@@ -57,7 +57,7 @@ def create_url():
         dates,
     ])
     
-    url = "https://api.twitter.com/2/tweets/search/recent?query={}&{}".format(
+    url = 'https://api.twitter.com/2/tweets/search/recent?query={}&{}'.format(
         query, 
         params
     )
@@ -65,25 +65,41 @@ def create_url():
 
 
 def create_headers(bearer_token):
-    headers = {"Authorization": "Bearer {}".format(bearer_token)}
+    headers = {'Authorization': 'Bearer {}'.format(bearer_token)}
     return headers
 
 
 def connect_to_endpoint(url, headers):
-    response = requests.request("GET", url, headers=headers)
+    response = requests.request('GET', url, headers=headers)
     print(response.status_code)
     if response.status_code != 200:
         raise Exception(response.status_code, response.text)
     return response.json()
 
 
+def paginate(url, headers, paginate_token=None):
+    if paginate_token:
+        full_url = f'{url}&next_token={paginate_token}'
+    else:
+        full_url = url
+
+    data = connect_to_endpoint(full_url, headers)
+    if data:
+        yield data
+    
+    paginate_token = data.get('meta', {}).get('next_token')
+    if paginate_token:
+        yield from paginate(url, headers, paginate_token)
+
+
 def main():
     bearer_token = auth()
     url = create_url()
     headers = create_headers(bearer_token)
-    json_response = connect_to_endpoint(url, headers)
-    print(json.dumps(json_response, indent=4, sort_keys=True))
+
+    for data in paginate(url, headers):
+        print(json.dumps(data, indent=4, sort_keys=True))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
