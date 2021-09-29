@@ -69,7 +69,7 @@ def create_headers(bearer_token):
     return headers
 
 
-def connect_to_endpoint(url, headers):
+def request_data(url, headers):
     response = requests.request('GET', url, headers=headers)
     print(response.status_code)
     if response.status_code != 200:
@@ -83,7 +83,7 @@ def paginate(url, headers, paginate_token=None):
     else:
         full_url = url
 
-    data = connect_to_endpoint(full_url, headers)
+    data = request_data(full_url, headers)
     if data:
         yield data
     
