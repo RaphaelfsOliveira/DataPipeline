@@ -3,3 +3,4 @@
 *.log
 logs
 __pycache__
+*.json
