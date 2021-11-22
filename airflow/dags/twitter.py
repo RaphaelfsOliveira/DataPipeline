@@ -13,7 +13,7 @@ with DAG(dag_id='twitter', start_date=start_date) as dag:
         file_path=join(
             '/Users/raphael/Galpao/data_engineer/data_pipeline/datalake',
             'twitter_alura_online',
-            'extract_date_{{ ds }}',
+            'extract_date={{ ds }}',
             'alura_online_{{ ds_nodash }}.json'
         )
     )

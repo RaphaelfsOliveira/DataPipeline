@@ -4,3 +4,7 @@
 logs
 __pycache__
 *.json
+*.dat
+*.txt
+*.ctrl
+*.lck

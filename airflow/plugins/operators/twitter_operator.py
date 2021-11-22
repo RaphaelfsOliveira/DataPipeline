@@ -58,7 +58,7 @@ class TwitterOperator(BaseOperator):
 
 
 if __name__ == '__main__':
-    start_date = datetime.now() - timedelta(days=1)
+    start_date = datetime.now() - timedelta(days=2)
 
     with DAG(dag_id='TwitterTest', start_date=start_date) as dag:
         operator = TwitterOperator(
@@ -66,7 +66,7 @@ if __name__ == '__main__':
             file_path=join(
                 '/Users/raphael/Galpao/data_engineer/data_pipeline/datalake',
                 'twitter_alura_online',
-                'extract_date_{{ ds }}',
+                'extract_date={{ ds }}',
                 'alura_online_{{ ds_nodash }}.json'
             ),
             task_id='test_run'

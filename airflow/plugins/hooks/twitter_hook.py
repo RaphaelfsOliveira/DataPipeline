@@ -75,7 +75,7 @@ class TwitterHook(HttpHook):
     def request_data(self, url, session):
         response = requests.Request('GET', url)
         prep = session.prepare_request(response)
-        self.log.info(f'URL: {url}')
+        self.log.info(f'URL: {url[:40]}')
 
         return self.run_and_check(session, prep, {}).json()
 
