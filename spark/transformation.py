@@ -43,6 +43,20 @@ def twitter_transform(spark, source, path_dest, extract_date):
     export_json(user_df, table_dest.format(table_name="user"))
 
 
+def get_path(args):
+    path = '/Users/raphael/Galpao/data_engineer/data_pipeline/datalake/{}/twitter_alura_online'
+    path_dest = path.format('silver')
+    source_path = path.format('bronze')
+    
+    folders = [folder for folder in listdir(source_path)]
+    extract_date = max(folders)
+
+    extract_date = f'extract_date={args.extract_date}' if args.extract_date else extract_date
+    source = f"{path.format('bronze')}/{extract_date}"
+
+    return (source, path_dest, extract_date)
+
+
 if __name__ == '__main__':
     # for send args to SparkJob
     parser = argparse.ArgumentParser(description="Spark Twitter Transformation")
@@ -57,14 +71,4 @@ if __name__ == '__main__':
         .appName("twitter_transformation") \
         .getOrCreate()
 
-    path = '/Users/raphael/Galpao/data_engineer/data_pipeline/datalake/{}/twitter_alura_online'
-    path_dest = path.format('silver')
-    source_path = path.format('bronze')
-    
-    folders = [folder for folder in listdir(source_path)]
-    extract_date = max(folders)
-
-    extract_date = f'extract_date={args.extract_date}' if args.extract_date else extract_date
-    source = f"{path.format('bronze')}/{extract_date}"
-
-    twitter_transform(spark, source, path_dest, extract_date)
+    twitter_transform(spark, *get_path(args))
