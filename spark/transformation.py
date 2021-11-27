@@ -31,13 +31,13 @@ def export_json(df, path_dest):
     df.write.mode("overwrite").json(path_dest)
 
 
-def twitter_transform(spark, source, path_dest, process_date):
+def twitter_transform(spark, source, path_dest, extract_date):
     df = spark.read.json(source)
 
     tweet_df = get_tweets_data(df)
     user_df = get_users_data(df)
 
-    table_dest = join(path_dest, "{table_name}", f"process_date={process_date}")
+    table_dest = join(path_dest, "{table_name}", f"extract_date={extract_date}")
 
     export_json(tweet_df, table_dest.format(table_name="tweet"))
     export_json(user_df, table_dest.format(table_name="user"))
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Spark Twitter Transformation")
     parser.add_argument("--source", required=False)
     parser.add_argument("--path-dest", required=False)
-    parser.add_argument("--process-date", required=False)
+    parser.add_argument("--extract-date", required=False)
     args = parser.parse_args()
 
 
@@ -62,9 +62,9 @@ if __name__ == '__main__':
     source_path = path.format('bronze')
     
     folders = [folder for folder in listdir(source_path)]
-    process_date = max(folders).split('=').pop()
+    extract_date = max(folders).split('=').pop()
 
-    process_date = args.process_date or process_date
-    source = f"{path.format('bronze')}/extract_date={process_date}"
+    extract_date = args.extract_date or extract_date
+    source = f"{path.format('bronze')}/extract_date={extract_date}"
 
-    twitter_transform(spark, source, path_dest, process_date)
+    twitter_transform(spark, source, path_dest, extract_date)
