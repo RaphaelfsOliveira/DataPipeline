@@ -2,6 +2,7 @@ from pyspark.sql import SparkSession
 import argparse
 from pyspark.sql import functions as f
 from os.path import join
+from os import listdir
 
 
 def get_tweets_data(df):
@@ -47,7 +48,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Spark Twitter Transformation")
     parser.add_argument("--source", required=False)
     parser.add_argument("--path-dest", required=False)
-    parser.add_argument("--process-date", required=True)
+    parser.add_argument("--process-date", required=False)
     args = parser.parse_args()
 
 
@@ -55,8 +56,15 @@ if __name__ == '__main__':
         .master("local") \
         .appName("twitter_transformation") \
         .getOrCreate()
+
+    path = '/Users/raphael/Galpao/data_engineer/data_pipeline/datalake/{}/twitter_alura_online'
+    path_dest = path.format('silver')
+    source_path = path.format('bronze')
     
-    source = f'/Users/raphael/Galpao/data_engineer/data_pipeline/datalake/bronze/twitter_alura_online/extract_date={args.process_date}'
-    path_dest = '/Users/raphael/Galpao/data_engineer/data_pipeline/datalake/silver'
-    
-    twitter_transform(spark, source, path_dest, args.process_date)
+    folders = [folder for folder in listdir(source_path)]
+    process_date = max(folders).split('=').pop()
+
+    process_date = args.process_date or process_date
+    source = f"{path.format('bronze')}/extract_date={process_date}"
+
+    twitter_transform(spark, source, path_dest, process_date)
