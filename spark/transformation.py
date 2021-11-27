@@ -2,7 +2,6 @@ from pyspark.sql import SparkSession
 import argparse
 from pyspark.sql import functions as f
 from os.path import join
-from datetime import datetime
 
 
 def get_tweets_data(df):
