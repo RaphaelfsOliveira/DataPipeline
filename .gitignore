@@ -8,3 +8,6 @@ __pycache__
 *.txt
 *.ctrl
 *.lck
+.DS_Store
+_SUCCESS
+*.crc
