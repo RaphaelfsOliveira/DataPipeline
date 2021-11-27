@@ -62,9 +62,9 @@ if __name__ == '__main__':
     source_path = path.format('bronze')
     
     folders = [folder for folder in listdir(source_path)]
-    extract_date = max(folders).split('=').pop()
+    extract_date = max(folders)
 
-    extract_date = args.extract_date or extract_date
-    source = f"{path.format('bronze')}/extract_date={extract_date}"
+    extract_date = f'extract_date={args.extract_date}' if args.extract_date else extract_date
+    source = f"{path.format('bronze')}/{extract_date}"
 
     twitter_transform(spark, source, path_dest, extract_date)
