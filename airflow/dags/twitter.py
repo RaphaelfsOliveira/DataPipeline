@@ -30,3 +30,5 @@ with DAG(dag_id='twitter', start_date=start_date) as dag:
         #     "--extract-date",
         # ]
     )
+
+    twitter_operator >> twitter_transform
