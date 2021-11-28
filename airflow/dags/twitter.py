@@ -24,9 +24,9 @@ with DAG(dag_id='twitter', start_date=start_date) as dag:
         task_id="transform_twitter_alura_online",
         application="/Users/raphael/Galpao/data_engineer/data_pipeline/spark/transformation.py",
         name="twitter_transformation",
-        application_args=[
-            "--source", 
-            "--path-dest",
-            "--extract-date",
-        ]
+        # application_args=[
+        #     "--source", 
+        #     "--path-dest",
+        #     "--extract-date",
+        # ]
     )
