@@ -37,7 +37,7 @@ def twitter_transform(spark, source, path_dest, extract_date):
     tweet_df = get_tweets_data(df)
     user_df = get_users_data(df)
 
-    table_dest = join(path_dest, "{table_name}", f"extract_date={extract_date}")
+    table_dest = join(path_dest, "{table_name}", f"{extract_date}")
 
     export_json(tweet_df, table_dest.format(table_name="tweet"))
     export_json(user_df, table_dest.format(table_name="user"))
